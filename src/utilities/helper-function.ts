@@ -28,24 +28,23 @@ export const getUserIP = (socket: any): string => {
 
 
 function getRandomNumber(): number {
-  return Math.floor(Math.random() * 13) + 1;
+  return Math.floor(Math.random() * 6) + 1;
 }
 
 
-function concatRandomSuit(val: number): string {
-  const suits = ['D', 'H', 'C', 'S'];
-  return `${val}-${suits[Math.floor(Math.random() * 4)]}`
-}
 
-interface GameResult {
-  card: string;
-
+export interface GameRoundResult {
+  resultDiceComb: string;
+  resultDiceSum: number;
   winner: 1 | 2 | 3; // 1 = Seven Down, 2 = Seven Up, 3 = Exact Seven
 }
 
-export const getResult = (): GameResult => {
-  const value = getRandomNumber();
-  const card = concatRandomSuit(value);
+export const getResult = (): GameRoundResult => {
+  const dice1 = getRandomNumber();
+  const dice2 = getRandomNumber();
+
+  const resultDiceComb = `${dice1}-${dice2}`
+  const value = dice1 + dice2;
 
   let winner: 1 | 2 | 3;
 
@@ -58,7 +57,8 @@ export const getResult = (): GameResult => {
   }
 
   return {
-    card,
+    resultDiceComb,
+    resultDiceSum: value,
     winner,
   };
 };

@@ -2,7 +2,7 @@ import { updateBalanceFromAccount } from '../../utilities/common-function';
 import { addSettleBet, insertBets } from './bets-db';
 import { appConfig } from '../../utilities/app-config';
 import { setCache, getCache } from '../../utilities/redis-connection';
-import { getBetResult, getUserIP, logEventAndEmitResponse } from '../../utilities/helper-function';
+import { GameRoundResult, getBetResult, getUserIP, logEventAndEmitResponse } from '../../utilities/helper-function';
 import { createLogger } from '../../utilities/logger';
 import { Server, Socket } from 'socket.io';
 const logger = createLogger('Bets', 'jsonl');
@@ -11,11 +11,6 @@ const settlBetLogger = createLogger('Settlement', 'jsonl');
 interface BetData {
     betAmount: number;
     chip: number;
-}
-
-interface RoundResult {
-    card: string;
-    winner: 1 | 2 | 3; // 1 = Seven Down, 2 = Seven Up, 3 = Exact Seven
 }
 
 type BetResult = {
@@ -134,7 +129,7 @@ export const placeBet = async (socket: Socket, betData: [string, string]) => {
     return socket.emit("bet", { message: "BET PLACED SUCCESSFULLY" });
 };
 
-export const settleBet = async (io: Server, result: RoundResult, lobbyId: number): Promise<void> => {
+export const settleBet = async (io: Server, result: GameRoundResult, lobbyId: number): Promise<void> => {
     try {
 
         if (roundBets.length > 0) {

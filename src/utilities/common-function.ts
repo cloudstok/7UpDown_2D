@@ -66,7 +66,6 @@ export const updateBalanceFromAccount = async (data: BetData, key: WebhookKey, p
         if (!webhookData) return { status: false, type: key };
 
         if (key === 'CREDIT') {
-            console.log({ ...webhookData, operatorId: playerDetails.operatorId, token: playerDetails.token })
             await sendToQueue('', 'games_cashout', JSON.stringify({ ...webhookData, operatorId: playerDetails.operatorId, token: playerDetails.token }));
             return { status: true, type: key };
         };
