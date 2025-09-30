@@ -4,7 +4,6 @@ import { createLogger } from '../../utilities/logger';
 import { setCurrentLobby } from '../bets/bets-session';
 import { getResult } from '../../utilities/helper-function';
 import { settleBet } from '../bets/bets-session';
-import { read } from 'fs';
 
 const logger = createLogger('lobbies', 'jsonl');
 
@@ -51,7 +50,7 @@ const initLobby = async (io: Server): Promise<void> => {
   recurLobbyData.status = 3;
   setCurrentLobby(recurLobbyData);
   for (let z = 1; z <= end_delay; z++) {
-    io.emit('cards', `${lobbyId}:${z}:ENDED`);
+    io.emit('cards', `${lobbyId}:${z + "_" + JSON.stringify(result)}:ENDED`);
     await sleep(1000);
   }
 

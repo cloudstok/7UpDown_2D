@@ -83,7 +83,7 @@ export const getBetResult = (betAmount: number, chip: number, result: number): B
 
   if (chip === result) {
     resultData.status = 'win';
-    resultData.mult = (chip === 1 || chip === 2) ? 1.98 : 12;
+    resultData.mult = (chip === 1 || chip === 3) ? 2 : 5;
     resultData.winAmount = Math.min(betAmount * resultData.mult, appConfig.maxCashoutAmount)
   }
 

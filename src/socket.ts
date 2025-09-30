@@ -54,10 +54,10 @@ export const initSocket = (io: Server): void => {
 
 export const getHistory = async (socket: Socket, userId: string, operator_id: string) => {
   try {
-    const historyData = await read(`SELECT lobby_id, result, created_at FROM lobbies ORDER BY created_at DESC LIMIT 3`);
+    const historyData = await read(`SELECT result FROM lobbies ORDER BY created_at DESC LIMIT 10`);
     const getLastWin = await read(`SELECT win_amount FROM settlement WHERE user_id = ? and operator_id = ? ORDER BY created_at DESC LIMIT 1`, [decodeURIComponent(userId), operator_id]);
     if (getLastWin && getLastWin.length > 0) socket.emit('lastWin', { myWinningAmount: getLastWin[0].win_amount });
-    return socket.emit('historyData', historyData);
+    return socket.emit('historyData', historyData.map((e: any) => e.result.resultDiceComb).reverse());
   } catch (err) {
     console.error(`Err while getting user history data is:::`, err);
     return;

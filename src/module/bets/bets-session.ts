@@ -61,6 +61,7 @@ export const placeBet = async (socket: Socket, betData: [string, string]) => {
     let totalBetAmount = 0;
     let isBetInvalid = 0;
     const bets: BetData[] = [];
+    const chips: number[] = []
     userBets.forEach((bet) => {
         const [chipStr, betAmountStr] = bet.split('-');
         const betAmount = Number(betAmountStr);
@@ -72,15 +73,20 @@ export const placeBet = async (socket: Socket, betData: [string, string]) => {
             betAmount > appConfig.maxBetAmount ||
             lobbyData.lobbyId !== lobbyId && lobbyData.status !== 0) isBetInvalid = 1;
 
-
-        if (![1, 2, 3, 4].includes(chip)) isBetInvalid = 1;
-
+        if (![1, 2, 3].includes(chip)) isBetInvalid = 1;
+        chips.push(chip);
         totalBetAmount += betAmount;
         bets.push(data);
     });
 
+    if ((chips.includes(1) && chips.includes(3)) ||
+        ([1, 2, 3].every(c => chips.includes(c)))) {
+        console.log("Invalid Bet: Chips 1 and 3 cannot be placed together");
+        isBetInvalid++;
+    }
+
     if (isBetInvalid) {
-        return logEventAndEmitResponse(socket, betObj, 'Invalid Bet Amount', 'bet');
+        return logEventAndEmitResponse(socket, betObj, 'Invalid Bet type/Amount', 'bet');
     }
 
     if (totalBetAmount > Number(balance)) {
