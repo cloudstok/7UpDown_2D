@@ -15,7 +15,7 @@ interface PlayerDetails {
 };
 
 interface BetData {
-    id: number;
+    id: string;
     bet_amount?: number | string;
     winning_amount?: number | string;
     game_id?: string;

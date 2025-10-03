@@ -4,7 +4,7 @@ import { eventRouter } from './router/event-router';
 import { messageRouter } from './router/message-router';
 import { setCache, deleteCache } from './utilities/redis-connection';
 import { read } from './utilities/db-connection';
-
+import { getCurrentLobbiesInfo } from './module/bets/bets-session';
 
 export const initSocket = (io: Server): void => {
   eventRouter(io);
@@ -36,8 +36,8 @@ export const initSocket = (io: Server): void => {
       },
     );
 
+    socket.emit("lobbiesInfo", getCurrentLobbiesInfo())
     await setCache(`PL:${socket.id}`, JSON.stringify({ ...userData, socketId: socket.id }), 3600);
-    await getHistory(socket, userData.userId, userData.operatorId);
 
     messageRouter(io, socket);
 
@@ -52,9 +52,9 @@ export const initSocket = (io: Server): void => {
 };
 
 
-export const getHistory = async (socket: Socket, userId: string, operator_id: string) => {
+export const getHistory = async (socket: Socket, userId: string, operator_id: string, lobbyNo: number | string) => {
   try {
-    const historyData = await read(`SELECT result FROM lobbies ORDER BY created_at DESC LIMIT 10`);
+    const historyData = await read(`SELECT result FROM lobbies where lobby_no = ? ORDER BY created_at DESC LIMIT 10`, [lobbyNo]);
     const getLastWin = await read(`SELECT win_amount FROM settlement WHERE user_id = ? and operator_id = ? ORDER BY created_at DESC LIMIT 1`, [decodeURIComponent(userId), operator_id]);
     if (getLastWin && getLastWin.length > 0) socket.emit('lastWin', { myWinningAmount: getLastWin[0].win_amount });
     return socket.emit('historyData', historyData.map((e: any) => e.result.resultDiceComb).reverse());

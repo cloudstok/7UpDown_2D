@@ -1,19 +1,11 @@
 import { write } from '../../utilities/db-connection';
+import { LobbyData } from '../bets/bets-session';
 
-const SQL_INSERT_LOBBIES = 'INSERT INTO lobbies (lobby_id, start_delay, end_delay, result) values(?,?,?,?)';
+const SQL_INSERT_LOBBIES = 'INSERT INTO lobbies (lobby_no, lobby_id, start_delay, end_delay, result) values(?,?,?,?,?)';
 
-interface LobbyData {
-  lobbyId: number;
-  start_delay: number;
-  end_delay: number;
-  result: {};
-  time?: Date;
-}
-
-export const insertLobbies = async (data: LobbyData): Promise<void> => {
+export const insertLobbies = async (data: { lobby_no: number, lobby_id: number, start_delay: number, end_delay: number, result: string }): Promise<void> => {
   try {
-    const { time, ...lobbyInfo } = data;
-    await write(SQL_INSERT_LOBBIES, Object.values(lobbyInfo));
+    await write(SQL_INSERT_LOBBIES, Object.values(data));
   } catch (err) {
     console.error(err);
   }

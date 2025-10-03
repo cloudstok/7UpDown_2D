@@ -1,5 +1,6 @@
 export const lobbies = `create table if not exists lobbies (
     id int primary key  auto_increment,
+    lobby_no SMALLINT NOT NULL,
     lobby_id BIGINT NOT NULL,
     start_delay INT NOT NULL,
     end_delay INT NOT NULL,
@@ -7,7 +8,7 @@ export const lobbies = `create table if not exists lobbies (
     created_at datetime DEFAULT CURRENT_TIMESTAMP
  );`
 
- export const bets = `CREATE TABLE IF NOT EXISTS bets (
+export const bets = `CREATE TABLE IF NOT EXISTS bets (
    id int primary key  auto_increment,
    bet_id varchar(255) NOT NULL,
    lobby_id varchar(255) NOT NULL,
@@ -19,7 +20,7 @@ export const lobbies = `create table if not exists lobbies (
  );`
 
 
- export const settlement = `CREATE TABLE IF NOT EXISTS settlement (
+export const settlement = `CREATE TABLE IF NOT EXISTS settlement (
    settlement_id int NOT NULL AUTO_INCREMENT,
    bet_id varchar(255) NOT NULL,
    lobby_id varchar(255) NOT NULL,

@@ -46,22 +46,27 @@ export const getResult = (): GameRoundResult => {
   const resultDiceComb = `${dice1}-${dice2}`
   const value = dice1 + dice2;
 
-  let winner: 1 | 2 | 3;
+  let winner: GameResult;
 
-  if (value < 7) {
-    winner = 1; // Seven Down
-  } else if (value > 7) {
-    winner = 2; // Seven Up
+  if (value > 7) {
+    winner = GameResult.SevenUp;
+  } else if (value === 7) {
+    winner = GameResult.ExactSeven;
   } else {
-    winner = 3; // Exact Seven
+    winner = GameResult.SevenDown;
   }
-
   return {
     resultDiceComb,
     resultDiceSum: value,
     winner,
   };
 };
+
+export enum GameResult {
+  SevenUp = 1,
+  ExactSeven = 2,
+  SevenDown = 3,
+}
 
 type BetResult = {
   chip: number;
@@ -71,7 +76,6 @@ type BetResult = {
   status: 'win' | 'loss';
 };
 
-
 export const getBetResult = (betAmount: number, chip: number, result: number): BetResult => {
   const resultData: BetResult = {
     chip,
@@ -80,7 +84,7 @@ export const getBetResult = (betAmount: number, chip: number, result: number): B
     mult: 0.00,
     status: 'loss'
   };
-
+  console.log(chip, result);
   if (chip === result) {
     resultData.status = 'win';
     resultData.mult = (chip === 1 || chip === 3) ? 2 : 5;
